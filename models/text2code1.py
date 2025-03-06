@@ -16,9 +16,9 @@ class PseudoToCode:
 
         current_dir = os.path.dirname(os.path.abspath(__file__))
 
-        self.model_weights_path = os.path.join(current_dir, 'pseudoToCode', 'pseudoToCode.weights.h5')
-        self.tokenizer_inputs_path = os.path.join(current_dir, 'pseudoToCode', 'tokenizer_inputs.pkl')
-        self.tokenizer_outputs_path = os.path.join(current_dir, 'pseudoToCode', 'tokenizer_outputs.pkl')
+        self.model_weights_path = os.path.join(current_dir, 'text2code', 'text_to_code_transformer_weights.weights.h5')
+        self.tokenizer_inputs_path = os.path.join(current_dir, 'text2code', 'tokenizer_inputs.pkl')
+        self.tokenizer_outputs_path = os.path.join(current_dir, 'text2code', 'tokenizer_outputs.pkl')
 
         # Ensure Git LFS files are pulled
         if not os.path.exists(self.model_weights_path):
