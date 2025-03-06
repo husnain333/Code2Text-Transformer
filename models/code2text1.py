@@ -36,10 +36,10 @@ class CodeToPseudo:
 
     def load_model(self):
         try:
-            num_words_inputs = len(self.input_tokenizer) + 2
+            num_words_inputs = 9327 + 2
             # num_words_output = self.output_tokenizer.vocab_size + 2
-            num_words_output = len(self.output_tokenizer) + 2
-            
+            num_words_output = 5933 + 2
+
 
             transformer = Transformer(
                 vocab_size_enc=num_words_inputs,
