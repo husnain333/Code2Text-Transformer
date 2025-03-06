@@ -7,7 +7,6 @@ st.set_page_config(
     page_title="Pseudocode to C++ Code and C++ Code to Pseudocode Generator",
     page_icon=":sparkles:",
     layout="wide",
-    color="white",
 )
 
 # Inject custom CSS to enforce a bright theme
@@ -15,11 +14,11 @@ st.markdown(
     """
     <style>
     body {
-        background-color:rgb(0, 0, 0);
+        background-color: #ffffff;
         color: #000000;
     }
     .stApp {
-        background-color:rgb(0, 0, 0);
+        background-color: #ffffff;
     }
     </style>
     """,
