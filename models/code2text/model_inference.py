@@ -1,5 +1,5 @@
 import tensorflow as tf
-
+import math
 def predict(transformer, inp_sentence, tokenizer_in, tokenizer_out, sos_token_input, eos_token_input, sos_token_output, eos_token_output, target_max_len):
     # Tokenize the input sequence using the tokenizer_in
     inp_sentence = sos_token_input + tokenizer_in.encode(inp_sentence) + eos_token_input
@@ -29,11 +29,11 @@ def predict(transformer, inp_sentence, tokenizer_in, tokenizer_out, sos_token_in
 # Update the translate function to use the model and tokens provided
 def translate(model, sentence, tokenizer_in, tokenizer_out, MAX_LENGTH, device=None):
     # Recalculate tokens
-    num_words_inputs = len(tokenizer_in) + 2
+    num_words_inputs = 9327 + 2
     sos_token_input = [num_words_inputs - 2]
     eos_token_input = [num_words_inputs - 1]
 
-    num_words_output = len(tokenizer_out) + 2
+    num_words_output = 5933 + 2
     sos_token_output = [num_words_output - 2]
     eos_token_output = [num_words_output - 1]
 
