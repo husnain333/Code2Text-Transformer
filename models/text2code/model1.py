@@ -29,11 +29,11 @@ def predict(transformer, inp_sentence, tokenizer_in, tokenizer_out, sos_token_in
 # Update the translate function to use the model and tokens provided
 def translate(model, sentence, tokenizer_in, tokenizer_out, MAX_LENGTH, device=None):
     # Recalculate tokens
-    num_words_inputs = tokenizer_in.vocab_size + 2
+    num_words_inputs = len(tokenizer_in) + 2
     sos_token_input = [num_words_inputs - 2]
     eos_token_input = [num_words_inputs - 1]
 
-    num_words_output = tokenizer_out.vocab_size + 2
+    num_words_output = len(tokenizer_out) + 2
     sos_token_output = [num_words_output - 2]
     eos_token_output = [num_words_output - 1]
 
