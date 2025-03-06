@@ -16,10 +16,10 @@ class CodeToPseudo:
 
         current_dir = os.path.dirname(os.path.abspath(__file__))
 
-        self.model_weights_path = os.path.join(current_dir, 'code2text', 'code_to_text_transformer.weights.h5')
-        self.tokenizer_inputs_path = os.path.join(current_dir, 'code2text', 'tokenizer_inputs.pkl')
-        self.tokenizer_outputs_path = os.path.join(current_dir, 'code2text', 'tokenizer_outputs.pkl')
-
+        self.model_weights_path = f"{current_dir}/code2text/code_to_text_transformer.weights.h5"
+        self.tokenizer_inputs_path = f"{current_dir}/code2text/tokenizer_inputs.pkl"
+        self.tokenizer_outputs_path = f"{current_dir}/code2text/tokenizer_outputs.pkl"
+        
         # Ensure Git LFS files are pulled
         if not os.path.exists(self.model_weights_path):
             try:
