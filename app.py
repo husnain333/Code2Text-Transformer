@@ -7,6 +7,7 @@ st.set_page_config(
     page_title="Pseudocode to C++ Code and C++ Code to Pseudocode Generator",
     page_icon=":sparkles:",
     layout="wide",
+    color="white",
 )
 
 # Inject custom CSS to enforce a bright theme
