@@ -16,30 +16,27 @@ class CodeToPseudo:
 
         current_dir = os.path.dirname(os.path.abspath(__file__))
 
-        self.model_weights_path = f"{current_dir}/code2text/code_to_text_transformer.weights.h5"
-        self.tokenizer_inputs_path = f"{current_dir}/code2text/tokenizer_inputs.pkl"
-        self.tokenizer_outputs_path = f"{current_dir}/code2text/tokenizer_outputs.pkl"
-        
+        self.model_weights_path = os.path.join(current_dir, 'code2text', 'code_to_text_transformer.weights.h5')
+        self.tokenizer_inputs_path = os.path.join(current_dir, 'code2text', 'code2text_tokenizer_inputs.pkl')
+        self.tokenizer_outputs_path = os.path.join(current_dir, 'code2text', 'code2text_tokenizer_outputs.pkl')
+
+        self.input_tokenizer, self.output_tokenizer = self.load_tokenizer()
         # Ensure Git LFS files are pulled
         if not os.path.exists(self.model_weights_path):
             try:
                 subprocess.run(["git", "lfs", "pull"], check=True)
-                self.input_tokenizer, self.output_tokenizer = self.load_tokenizer()
                 self.model = self.load_model()
             except subprocess.CalledProcessError as e:
-                st.error(f"Error pulling Git LFS files for Code to PseudoCode: {e}")
-                self.input_tokenizer, self.output_tokenizer = None, None
+                st.error(f"Error pulling Git LFS files (CodeToPseudo): {e}")
                 self.model = None
         else:
-            self.input_tokenizer, self.output_tokenizer = self.load_tokenizer()
             self.model = self.load_model()
 
     def load_model(self):
         try:
-            num_words_inputs = 9327 + 2
-            # num_words_output = self.output_tokenizer.vocab_size + 2
-            num_words_output = 5933 + 2
-
+            # Recalculate tokens
+            num_words_inputs = self.input_tokenizer.vocab_size + 2
+            num_words_output = self.output_tokenizer.vocab_size + 2
 
             transformer = Transformer(
                 vocab_size_enc=num_words_inputs,
@@ -61,7 +58,7 @@ class CodeToPseudo:
 
             return transformer
         except Exception as e:
-            print(f"Error loading model: {e}")
+            st.error(f"Error loading model (CodeToPseudo): {e}")
             return None
 
     def load_tokenizer(self):
@@ -74,7 +71,7 @@ class CodeToPseudo:
                 tokenizer_outputs = pickle.load(f)
             return tokenizer_inputs, tokenizer_outputs
         except Exception as e:
-            print(f"Error loading tokenizers: {e}")
+            st.error(f"Error loading tokenizers (CodeToPseudo): {e}")
             return None, None
     
     def generate_pseudocode(self, cpp_code):
@@ -83,5 +80,5 @@ class CodeToPseudo:
             predictions = translate(self.model, cpp_code, self.input_tokenizer, self.output_tokenizer, self.MAX_LENGTH)
             return predictions
         except Exception as e:
-            print(f"Error generating pseudocode: {e}")
+            st.error(f"Error generating pseudocode (CodeToPseudo): {e}")
             return f"Error generating pseudocode: {e}"
