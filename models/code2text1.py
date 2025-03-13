@@ -21,13 +21,6 @@ class CodeToPseudo:
         self.tokenizer_outputs_path = os.path.join(current_dir, 'code2text', 'code2text_tokenizer_outputs.pkl')
 
         self.input_tokenizer, self.output_tokenizer = self.load_tokenizer()
-        
-        # Only proceed to load model if tokenizers loaded successfully
-        if self.input_tokenizer is None or self.output_tokenizer is None:
-            st.error("Cannot load model because tokenizers failed to load")
-            self.model = None
-            return
-            
         # Ensure Git LFS files are pulled
         if not os.path.exists(self.model_weights_path):
             try:
@@ -41,11 +34,6 @@ class CodeToPseudo:
 
     def load_model(self):
         try:
-            # Verify tokenizers are available
-            if self.input_tokenizer is None or self.output_tokenizer is None:
-                st.error("Cannot load model: tokenizers are not available")
-                return None
-                
             # Recalculate tokens
             num_words_inputs = self.input_tokenizer.vocab_size + 2
             num_words_output = self.output_tokenizer.vocab_size + 2
@@ -75,18 +63,12 @@ class CodeToPseudo:
 
     def load_tokenizer(self):
         try:
-            # Handle pickle loading with encoding specified
+            # Load tokenizers
             with open(self.tokenizer_inputs_path, "rb") as f:
-                tokenizer_inputs = pickle.load(f, encoding='bytes')
+                tokenizer_inputs = pickle.load(f)
 
             with open(self.tokenizer_outputs_path, "rb") as f:
-                tokenizer_outputs = pickle.load(f, encoding='bytes')
-                
-            # Verify tokenizers loaded properly
-            if not hasattr(tokenizer_inputs, 'vocab_size') or not hasattr(tokenizer_outputs, 'vocab_size'):
-                st.error("Loaded tokenizers are missing required attributes")
-                return None, None
-                
+                tokenizer_outputs = pickle.load(f)
             return tokenizer_inputs, tokenizer_outputs
         except Exception as e:
             st.error(f"Error loading tokenizers (CodeToPseudo): {e}")
@@ -94,9 +76,6 @@ class CodeToPseudo:
     
     def generate_pseudocode(self, cpp_code):
         try:
-            if self.model is None or self.input_tokenizer is None or self.output_tokenizer is None:
-                return "Error: Model or tokenizers not loaded properly"
-                
             # Generate the C++ code
             predictions = translate(self.model, cpp_code, self.input_tokenizer, self.output_tokenizer, self.MAX_LENGTH)
             return predictions
