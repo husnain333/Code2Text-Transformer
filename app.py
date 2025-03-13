@@ -93,11 +93,11 @@ st.sidebar.header("Coversion Type")
 
 # Option to choose the conversion type
 conversion_type = st.sidebar.selectbox("Select Conversion Type", 
-                                       ("Pseudocode to C++ Code", "C++ Code to Pseudocode"))
+                                       ("Text to C++ Code", "C++ Code to Text"))
 
 # Input text area for pseudocode or C++ code
-if conversion_type == "Pseudocode to C++ Code":
-    pseudocode_input = st.text_area("Enter Pseudocode:", value=st.session_state.pseudocode_input)
+if conversion_type == "Text to C++ Code":
+    pseudocode_input = st.text_area("Enter Text:", value=st.session_state.pseudocode_input)
     st.session_state.pseudocode_input = pseudocode_input
     
     if st.button("Generate C++ Code"):
@@ -107,17 +107,17 @@ if conversion_type == "Pseudocode to C++ Code":
             st.subheader("Generated C++ Code:")
             st.code(cpp_code, language="cpp")
         else:
-            st.error("Please enter pseudocode to generate C++ code.")
+            st.error("Please enter Text to generate C++ code.")
 else:
     cpp_code_input = st.text_area("Enter C++ Code:", value=st.session_state.cpp_code_input)
     st.session_state.cpp_code_input = cpp_code_input
     
-    if st.button("Generate Pseudocode"):
+    if st.button("Generate Text"):
         if cpp_code_input:
-            with st.spinner("Generating pseudocode..."):
+            with st.spinner("Generating Text..."):
                 pseudocode = code_to_pseudo_model.generate_pseudocode(cpp_code_input)
-            st.subheader("Generated Pseudocode:")
+            st.subheader("Generated Text:")
             st.code(pseudocode)
         else:
-            st.error("Please enter C++ code to generate pseudocode.")
+            st.error("Please enter C++ code to generate Text.")
 
