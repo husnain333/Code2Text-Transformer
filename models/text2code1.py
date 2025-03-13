@@ -20,26 +20,23 @@ class PseudoToCode:
         self.tokenizer_inputs_path = os.path.join(current_dir, 'text2code', 'tokenizer_inputs.pkl')
         self.tokenizer_outputs_path = os.path.join(current_dir, 'text2code', 'tokenizer_outputs.pkl')
 
+        self.input_tokenizer, self.output_tokenizer = self.load_tokenizer()
         # Ensure Git LFS files are pulled
         if not os.path.exists(self.model_weights_path):
             try:
                 subprocess.run(["git", "lfs", "pull"], check=True)
-                self.input_tokenizer, self.output_tokenizer = self.load_tokenizer()
                 self.model = self.load_model()
             except subprocess.CalledProcessError as e:
-                st.error(f"Error pulling Git LFS files for PseudoCode to Code: {e}")
-                self.input_tokenizer, self.output_tokenizer = None, None
+                st.error(f"Error pulling Git LFS files (PseudoToCode): {e}")
                 self.model = None
         else:
-            self.input_tokenizer, self.output_tokenizer = self.load_tokenizer()
             self.model = self.load_model()
 
     def load_model(self):
         try:
             # Recalculate tokens
-            num_words_inputs = 9327+ 2
-            # num_words_output = self.output_tokenizer.vocab_size + 2
-            num_words_output = 5933 + 2
+            num_words_inputs = self.input_tokenizer.vocab_size + 2
+            num_words_output = self.output_tokenizer.vocab_size + 2
 
             transformer = Transformer(
                 vocab_size_enc=num_words_inputs,
@@ -61,7 +58,7 @@ class PseudoToCode:
 
             return transformer
         except Exception as e:
-            print(f"Error loading model: {e}")
+            st.error(f"Error loading model (PseudoToCode): {e}")
             return None
 
     def load_tokenizer(self):
@@ -74,7 +71,7 @@ class PseudoToCode:
                 tokenizer_outputs = pickle.load(f)
             return tokenizer_inputs, tokenizer_outputs
         except Exception as e:
-            print(f"Error loading tokenizers: {e}")
+            st.error(f"Error loading tokenizers (PseudoToCode): {e}")
             return None, None
 
     def generate_code(self, pseudocode):
@@ -83,5 +80,5 @@ class PseudoToCode:
             predictions = translate(self.model, pseudocode, self.input_tokenizer, self.output_tokenizer, self.MAX_LENGTH)
             return predictions
         except Exception as e:
-            print(f"Error generating code: {e}")
+            st.error(f"Error generating code (PseudoToCode): {e}")
             return f"Error generating code: {e}"
