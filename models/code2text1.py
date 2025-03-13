@@ -63,13 +63,40 @@ class CodeToPseudo:
 
     def load_tokenizer(self):
         try:
+            # Check if tokenizer files exist
+            if not os.path.exists(self.tokenizer_inputs_path) or not os.path.exists(self.tokenizer_outputs_path):
+                # Try to pull files from Git LFS
+                try:
+                    st.warning("Tokenizer files not found. Attempting to pull from Git LFS...")
+                    subprocess.run(["git", "lfs", "pull"], check=True)
+                except subprocess.CalledProcessError as e:
+                    st.error(f"Failed to pull tokenizer files from Git LFS: {e}")
+                    return None, None
+
+                # Check again after pull attempt
+                if not os.path.exists(self.tokenizer_inputs_path) or not os.path.exists(self.tokenizer_outputs_path):
+                    st.error("Tokenizer files still not found after Git LFS pull")
+                    return None, None
+            
             # Load tokenizers
             with open(self.tokenizer_inputs_path, "rb") as f:
                 tokenizer_inputs = pickle.load(f)
 
             with open(self.tokenizer_outputs_path, "rb") as f:
                 tokenizer_outputs = pickle.load(f)
+            
+            # Validate tokenizers
+            if not hasattr(tokenizer_inputs, 'vocab_size') or not hasattr(tokenizer_outputs, 'vocab_size'):
+                st.error("Loaded tokenizers appear to be invalid (missing vocab_size attribute)")
+                return None, None
+            
             return tokenizer_inputs, tokenizer_outputs
+        except FileNotFoundError as e:
+            st.error(f"Tokenizer file not found: {e}")
+            return None, None
+        except pickle.UnpicklingError as e:
+            st.error(f"Error unpickling tokenizer files: {e}")
+            return None, None
         except Exception as e:
             st.error(f"Error loading tokenizers (CodeToPseudo): {e}")
             return None, None
